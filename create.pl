@@ -61,13 +61,15 @@ sub main {
 
 	my @options = checklist("Which options should be enabled?", 
 		"set -e", ["auto-die on error", 1], 
+		"set -u", ["exit script if a variable is undefined", 0],
+		"set -o pipefail", ["fail if a command in a pipe fails", 0],
 		"set -x", ["show lines before executing them", 0],
 		"calltrace", ["Show call trace when the bash script dies", 1],
 		"define lmod stuff", ["Defines ml and module for module load", 0]
 
 	);
 	foreach my $option (@options) {
-		if($option =~ m#^set -[ex]$#) {
+		if($option =~ m#^set -([exu]|o pipefail)$#) {
 			$script .= "$option\n";
 		} elsif ($option eq "define lmod stuff") {
 			$script .= "LMOD_DIR=/usr/share/lmod/lmod/libexec/\n";
