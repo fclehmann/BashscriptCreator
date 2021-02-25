@@ -27,6 +27,9 @@ sub yesno {
 sub inputbox {
 	my ($text, $default) = (shift, shift // '');
 	my $string = $d->inputbox(text => $text, entry => $default);
+	if ($d->state() ne "OK") {
+		exit 0;
+	}
 	return $string;
 }
 
@@ -135,7 +138,7 @@ sub main {
 				$script .= qq#\techo "\t$helptext"\n#;
 
 
-				my $helptext = "--debug";
+				$helptext = "--debug";
 				while(length($helptext) < 50) {
 					$helptext .= ' ';
 				}
