@@ -124,6 +124,23 @@ sub main {
 					}
 					$script .= qq#\techo "\t$helptext"\n#;
 				}
+
+				my $helptext = "--help";
+				while(length($helptext) < 50) {
+					$helptext .= ' ';
+				}
+				$helptext .= " this help";
+				$script .= qq#\techo "\t$helptext"\n#;
+
+
+				my $helptext = "--debug";
+				while(length($helptext) < 50) {
+					$helptext .= ' ';
+				}
+				$helptext .= " Enables debug mode (set -x)";
+				$script .= qq#\techo "\t$helptext"\n#;
+				$script .= qq#\texit \$1\n#;
+
 				$script .= "}\n"
 			}
 
@@ -150,6 +167,7 @@ sub main {
 						}
 						$script .= "\t\t\tif ! [[ \$$name =~ \$re ]] ; then\n";
 						$script .= "\t\t\t\techo \"error: Not a $type: \$i\" >&2; exit 1\n";
+						$script .= "\t\t\t\thelp 1\n";
 						$script .= "\t\t\tfi\n";
 					}
 				}
@@ -160,14 +178,18 @@ sub main {
 
 			if($create_help) {
 				$script .= "\t\t-h|--help)\n";
-				$script .= "\t\t\thelp\n";
+				$script .= "\t\t\thelp 0\n";
 				$script .= "\t\t\t;;\n";
 			}
+
+			$script .= "\t\t--debug)\n";
+			$script .= "\t\t\tset -x\n";
+			$script .= "\t\t\t;;\n";
 
 			$script .= "\t\t*)\n";
 			$script .= "\t\t\techo \"Unknown parameter \$i\" >&2\n";
 			if($create_help) {
-				$script .= "\t\t\thelp\n";
+				$script .= "\t\t\thelp 1\n";
 			}
 			$script .= "\t\t\t;;\n";
 
