@@ -106,24 +106,23 @@ sub main {
 			if($create_help) {
 				$script .= "function help () {\n";
 				$script .= qq#\techo "Possible options:"\n#;
-				my $longest_var_name = 50;
 
 				foreach my $var (@variables) {
 					my $name = $var;
 					$name =~ s#=.*##g;
-					my $helptext = '';
+					my $helptext = "--$name";
 					if($var =~ m#(INT|FLOAT|STRING)#) {
 						my $type = $1;
 						$helptext .= "=$type";
 					}
 
 					if($var =~ m#=\((INT|FLOAT|STRING)\)(.*)#) {
-						while(length($helptext) < ($longest_var_name + 5)) {
+						while(length($helptext) < 50) {
 							$helptext .= ' ';
 						}
-						$helptext .= "default value: $2";
+						$helptext .= " default value: $2";
 					}
-					$script .= qq#\techo "\t--$name$helptext"\n#;
+					$script .= qq#\techo "\t$helptext"\n#;
 				}
 				$script .= "}\n"
 			}
@@ -141,7 +140,6 @@ sub main {
 				$name =~ s#=.*##g;
 				$script .= "\t\t--$name=*)\n";
 				$script .= "\t\t\t$name=\"\${i#*=}\"\n";
-				warn $var;
 				if ($var =~ m#\((INT|FLOAT|STRING)\)#) {
 					my $type = $1;
 					if($type ne "STRING") {
