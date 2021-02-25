@@ -99,7 +99,9 @@ sub main {
 
 	if(yesno("Do you want to define variables?")) {
 		my @variables = ();
-		while ((my $param = inputbox("Enter a variable name to be used as cli parameters or nothing for ending parameter input.\nExample:\nvarname\nvarname=defaultvalue\nvarname=(INT)defaultname\nvarname=(FLOAT)\nvarname=(STRING)defaultname")) ne "") {
+		while ((my $param = inputbox("Enter a variable name to be used as cli parameters or nothing for ending parameter input.\n".
+					"Example:\nvarname\nvarname=defaultvalue\nvarname=(INT)defaultvalue\n".
+					"varname=(FLOAT)\nvarname=(STRING)defaultvalue")) ne "") {
 			if($param) {
 				push @variables, $param;
 			}
@@ -151,7 +153,7 @@ sub main {
 
 			foreach my $var (@variables) {
 				my $var_exportable = $var;
-				$var_exportable =~ s#\((INT|FLOAT|STRING)\)##g;
+				$var_exportable =~ s#\((INT|FLOAT|STRING|!empty)\)##g;
 				$script .= "export $var_exportable\n";
 			}
 
@@ -171,11 +173,12 @@ sub main {
 							$script .= "\t\t\tre='^[+-]?[0-9]+([.][0-9]+)?\$'\n";
 						}
 						$script .= "\t\t\tif ! [[ \$$name =~ \$re ]] ; then\n";
-						$script .= "\t\t\t\techo \"error: Not a $type: \$i\" >&2; exit 1\n";
+						$script .= "\t\t\t\techo \"error: Not a $type: \$i\" >&2\n";
 						$script .= "\t\t\t\thelp 1\n";
 						$script .= "\t\t\tfi\n";
 					}
 				}
+
 				$script .= "\t\t\tshift\n";
 				$script .= "\t\t\t;;\n";
 			}
